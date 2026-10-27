@@ -1,0 +1,6 @@
+{
+  "name": "Hadith Library",
+  "description": "Authentic multi-lingual Hadith library and search app featuring canonical collections, verified Arabic matn, English and Urdu translations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
