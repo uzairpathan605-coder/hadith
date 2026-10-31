@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Hadith Library"
+rootProject.name = "DEEN-E-ILM"
 
 include(":app")

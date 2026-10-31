@@ -12,6 +12,10 @@ val AmiriFontFamily = FontFamily(
     Font(R.font.amiri, FontWeight.Normal)
 )
 
+val NotoNastaliqUrduFontFamily = FontFamily(
+    Font(R.font.noto_nastaliq_urdu, FontWeight.Normal)
+)
+
 val Typography = Typography(
     displayLarge = TextStyle(
         fontFamily = FontFamily.Serif,

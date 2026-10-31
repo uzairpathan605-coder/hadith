@@ -23,11 +23,11 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = AmberOnTertiaryLight,
     tertiaryContainer = AmberTertiaryContainerLight,
     onTertiaryContainer = AmberOnTertiaryContainerLight,
-    background = IvoryBackgroundLight,
-    onBackground = InkOnBackgroundLight,
-    surface = CreamSurfaceLight,
-    onSurface = InkOnSurfaceLight,
-    surfaceVariant = CreamSurfaceVariantLight,
+    background = WhiteBackgroundLight,
+    onBackground = DarkInkOnBackgroundLight,
+    surface = SoftSurfaceLight,
+    onSurface = DarkInkOnSurfaceLight,
+    surfaceVariant = NeutralSurfaceVariantLight,
     onSurfaceVariant = MutedOnSurfaceVariantLight,
     outline = OutlineLight
 )

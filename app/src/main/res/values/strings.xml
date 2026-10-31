@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">Hadith Library</string>
+    <string name="app_name">DEEN-E-ILM</string>
+    <string name="app_display_name">DEEN-E-ILM | دینِ علم</string>
+    <string name="app_arabic_name">دینِ علم</string>
+    <string name="app_tagline">Authentic Prophetic Hadith Library &amp; Search</string>
 </resources>

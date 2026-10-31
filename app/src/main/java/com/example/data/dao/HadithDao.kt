@@ -26,11 +26,23 @@ interface HadithDao {
     @Query("SELECT * FROM hadiths WHERE collectionName = :collectionName ORDER BY CAST(hadithNumber AS INTEGER) ASC")
     fun getHadithsForCollection(collectionName: String): Flow<List<HadithEntity>>
 
+    @Query("SELECT COUNT(*) FROM hadiths WHERE collectionName = :collectionName")
+    fun getHadithCountForCollection(collectionName: String): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM hadiths WHERE collectionName = :collectionName")
+    suspend fun countHadithsForCollection(collectionName: String): Int
+
     @Query("SELECT * FROM hadiths WHERE id = :id LIMIT 1")
     fun getHadithById(id: String): Flow<HadithEntity?>
 
     @Query("SELECT * FROM hadiths WHERE collectionName = :collectionName AND hadithNumber = :hadithNumber LIMIT 1")
     fun getHadithByNumber(collectionName: String, hadithNumber: String): Flow<HadithEntity?>
+
+    @Query("SELECT * FROM hadiths WHERE collectionName = :collectionName AND hadithNumber = :hadithNumber LIMIT 1")
+    suspend fun findHadithDirect(collectionName: String, hadithNumber: String): HadithEntity?
+
+    @Query("SELECT * FROM hadiths WHERE hadithNumber = :hadithNumber LIMIT 1")
+    suspend fun findHadithByNumberOnly(hadithNumber: String): HadithEntity?
 
     @Query("SELECT * FROM hadiths WHERE isBookmarked = 1 ORDER BY hadithNumber ASC")
     fun getBookmarkedHadiths(): Flow<List<HadithEntity>>
@@ -53,6 +65,9 @@ interface HadithDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHadiths(hadiths: List<HadithEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHadith(hadith: HadithEntity)
+
     @Query("UPDATE hadiths SET isBookmarked = :isBookmarked WHERE id = :hadithId")
     suspend fun setBookmark(hadithId: String, isBookmarked: Boolean)
 
@@ -61,6 +76,21 @@ interface HadithDao {
 
     @Query("SELECT COUNT(*) FROM hadiths")
     suspend fun getHadithCount(): Int
+
+    @Query("SELECT COUNT(*) FROM collections")
+    suspend fun getCollectionCount(): Int
+
+    @Query("SELECT COUNT(*) FROM hadiths")
+    fun getTotalHadithCountFlow(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM hadiths WHERE arabicText != ''")
+    fun getArabicHadithCountFlow(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM hadiths WHERE englishText != ''")
+    fun getEnglishHadithCountFlow(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM hadiths WHERE urduText != ''")
+    fun getUrduHadithCountFlow(): Flow<Int>
 
     @Query("DELETE FROM hadiths WHERE id NOT IN (SELECT id FROM hadiths WHERE isBookmarked = 1)")
     suspend fun clearUnsavedCache()

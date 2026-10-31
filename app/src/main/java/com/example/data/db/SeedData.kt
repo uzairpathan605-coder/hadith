@@ -3,6 +3,7 @@ package com.example.data.db
 import com.example.data.model.BookEntity
 import com.example.data.model.CollectionEntity
 import com.example.data.model.HadithEntity
+import com.example.data.model.SourceType
 
 object SeedData {
 
@@ -13,9 +14,10 @@ object SeedData {
             titleArabic = "صحيح البخاري",
             titleUrdu = "صحیح بخاری",
             author = "Imam Muhammad al-Bukhari (194–256 AH)",
-            shortIntro = "Considered by the vast majority of Muslims to be the most authentic compilation of Hadith traditions.",
+            shortIntro = "The most authentic compilation of Hadith traditions in Sunni Islam, compiled with rigorous criteria.",
             totalHadith = 7563,
-            hasBooks = true
+            hasBooks = true,
+            availableLanguages = "ar,en,ur"
         ),
         CollectionEntity(
             name = "muslim",
@@ -23,97 +25,28 @@ object SeedData {
             titleArabic = "صحيح مسلم",
             titleUrdu = "صحیح مسلم",
             author = "Imam Muslim ibn al-Hajjaj (204–261 AH)",
-            shortIntro = "The second of the two Sahihayn, celebrated for its rigorous chain analysis and thematic arrangement.",
+            shortIntro = "The second of the Sahihayn, renowned for its pristine transmission chains and thematic arrangement.",
             totalHadith = 7500,
-            hasBooks = true
-        ),
-        CollectionEntity(
-            name = "abudawud",
-            titleEnglish = "Sunan Abi Dawud",
-            titleArabic = "سنن أبي داود",
-            titleUrdu = "سنن ابی داؤد",
-            author = "Imam Abu Dawud Sulayman ibn al-Ash'ath (202–275 AH)",
-            shortIntro = "Focuses primarily on legal rulings (Ahkam) and jurisprudence narrations.",
-            totalHadith = 5274,
-            hasBooks = true
-        ),
-        CollectionEntity(
-            name = "tirmidhi",
-            titleEnglish = "Jami' at-Tirmidhi",
-            titleArabic = "جامع الترمذي",
-            titleUrdu = "جامع ترمذی",
-            author = "Imam Abu 'Isa Muhammad at-Tirmidhi (209–279 AH)",
-            shortIntro = "Distinguished by the author's thorough critical notes on hadith gradings and juristic opinions.",
-            totalHadith = 3956,
-            hasBooks = true
-        ),
-        CollectionEntity(
-            name = "nasai",
-            titleEnglish = "Sunan an-Nasa'i",
-            titleArabic = "سنن النسائي",
-            titleUrdu = "سنن نسائی",
-            author = "Imam Ahmad ibn Shu'ayb an-Nasa'i (214–303 AH)",
-            shortIntro = "Known for its strict scrutiny of narrators, ranking right behind the two Sahihs.",
-            totalHadith = 5758,
-            hasBooks = true
-        ),
-        CollectionEntity(
-            name = "ibnmajah",
-            titleEnglish = "Sunan Ibn Majah",
-            titleArabic = "سنن ابن ماجه",
-            titleUrdu = "سنن ابن ماجہ",
-            author = "Imam Ibn Majah Muhammad ibn Yazid (209–273 AH)",
-            shortIntro = "The sixth book of the canonical Kutub al-Sittah, containing valuable unique additions (Zawa'id).",
-            totalHadith = 4341,
-            hasBooks = true
-        ),
-        CollectionEntity(
-            name = "malik",
-            titleEnglish = "Muwatta Malik",
-            titleArabic = "موطأ مالك",
-            titleUrdu = "موطأ امام مالک",
-            author = "Imam Malik ibn Anas (93–179 AH)",
-            shortIntro = "The earliest surviving text of Islamic law and Prophetic tradition from Medina.",
-            totalHadith = 1858,
-            hasBooks = true
-        ),
-        CollectionEntity(
-            name = "ahmad",
-            titleEnglish = "Musnad Ahmad",
-            titleArabic = "مسند أحمد",
-            titleUrdu = "مسند احمد",
-            author = "Imam Ahmad ibn Hanbal (164–241 AH)",
-            shortIntro = "One of the largest compilations of hadith, organized by the companion narrators.",
-            totalHadith = 27647,
-            hasBooks = true
+            hasBooks = true,
+            availableLanguages = "ar,en,ur"
         )
     )
 
     val books = listOf(
         // Bukhari Books
         BookEntity("bukhari_1", "bukhari", "1", "Revelation", "بدء الوحي", "وحی کی شروعات", 7),
-        BookEntity("bukhari_2", "bukhari", "2", "Belief", "الإيمان", "ایمان", 58),
-        BookEntity("bukhari_8", "bukhari", "8", "Prayers (Salat)", "الصلاة", "نماز", 149),
+        BookEntity("bukhari_2", "bukhari", "2", "Belief (Faith)", "كتاب الإيمان", "کتاب ایمان", 58),
+        BookEntity("bukhari_3", "bukhari", "3", "Knowledge", "كتاب العلم", "کتاب علم", 77),
+        BookEntity("bukhari_8", "bukhari", "8", "Prayers (Salat)", "كتاب الصلاة", "کتاب نماز", 149),
         // Muslim Books
         BookEntity("muslim_1", "muslim", "1", "The Book of Faith", "كتاب الإيمان", "ایمان کا بیان", 442),
+        BookEntity("muslim_2", "muslim", "2", "The Book of Purification", "كتاب الطهارة", "طہارت کا بیان", 141),
         BookEntity("muslim_32", "muslim", "32", "Virtues and Good Manners", "كتاب البر والصلة والآداب", "حسن سلوک اور صلہ رحمی", 217),
-        // Abu Dawud Books
-        BookEntity("abudawud_43", "abudawud", "43", "General Behavior (Adab)", "كتاب الأدب", "اخلاق و آداب", 188),
-        // Tirmidhi Books
-        BookEntity("tirmidhi_27", "tirmidhi", "27", "Righteousness and Relations", "كتاب البر والصلة", "نیکی اور صلہ رحمی", 112),
-        BookEntity("tirmidhi_38", "tirmidhi", "38", "Day of Resurrection & Heart-Melters", "كتاب صفة القيامة والرقائق", "قیامت کی صفت اور رقت دل", 79),
-        // Nasai Books
-        BookEntity("nasai_1", "nasai", "1", "Purification", "كتاب الطهارة", "طہارت کا بیان", 325),
-        // Ibn Majah Books
-        BookEntity("ibnmajah_1", "ibnmajah", "1", "The Book of the Sunnah", "كتاب المقدمة", "کتاب سنت اور مقدمہ", 266),
-        // Muwatta Malik Books
-        BookEntity("malik_47", "malik", "47", "Good Character", "كتاب حسن الخلق", "حسن اخلاق", 18),
-        // Musnad Ahmad
-        BookEntity("ahmad_1", "ahmad", "1", "Musnad of the Rightly-Guided Caliphs", "مسند الخلفاء الراشدين", "مسند خلفائے راشدین", 450)
+        BookEntity("muslim_33", "muslim", "33", "The Book on Leadership (Kitab al-Imara)", "كتاب الإمارة", "امارت اور جہاد کا بیان", 232)
     )
 
     val hadiths = listOf(
-        // Bukhari Hadith 1
+        // Sahih Bukhari 1
         HadithEntity(
             id = "bukhari_1",
             collectionName = "bukhari",
@@ -130,9 +63,30 @@ object SeedData {
             chapterTitleEnglish = "How the Divine Revelation started being revealed to Allah's Messenger",
             chapterTitleUrdu = "رسول اللہ صلی اللہ علیہ وسلم پر وحی کی ابتدا کیسے ہوئی",
             sourceUrl = "https://sunnah.com/bukhari:1",
-            isBookmarked = true
+            isBookmarked = true,
+            sourceType = SourceType.CANONICAL_VERIFIED
         ),
-        // Bukhari Hadith 8
+        // Sahih Bukhari 2
+        HadithEntity(
+            id = "bukhari_2",
+            collectionName = "bukhari",
+            bookNumber = "1",
+            hadithNumber = "2",
+            inBookReference = "Book 1, Hadith 2",
+            arabicText = "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ يُوسُفَ، قَالَ أَخْبَرَنَا مَالِكٌ، عَنْ هِشَامِ بْنِ عُرْوَةَ، عَنْ أَبِيهِ، عَنْ عَائِشَةَ أُمِّ الْمُؤْمِنِينَ ـ رضى الله عنها ـ أَنَّ الْحَارِثَ بْنَ هِشَامٍ ـ رضى الله عنه ـ سَأَلَ رَسُولَ اللَّهِ صلى الله عليه وسلم فَقَالَ يَا رَسُولَ اللَّهِ كَيْفَ يَأْتِيكَ الْوَحْىُ فَقَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم:\n\n«أَحْيَانًا يَأْتِينِي مِثْلَ صَلْصَلَةِ الْجَرَسِ ـ وَهُوَ أَشَدُّهُ عَلَىَّ ـ فَيُفْصَمُ عَنِّي وَقَدْ وَعَيْتُ عَنْهُ مَا قَالَ، وَأَحْيَانًا يَتَمَثَّلُ لِي الْمَلَكُ رَجُلاً فَيُكَلِّمُنِي فَأَعِي مَا يَقُولُ». قَالَتْ عَائِشَةُ: وَلَقَدْ رَأَيْتُهُ يَنْزِلُ عَلَيْهِ الْوَحْىُ فِي الْيَوْمِ الشَّدِيدِ الْبَرْدِ، فَيَفْصِمُ عَنْهُ وَإِنَّ جَبِينَهُ لَيَتَفَصَّدُ عَرَقًا.",
+            englishText = "Narrated 'Aisha, the Mother of the Believers: Al-Harith bin Hisham asked Allah's Messenger (peace be upon him): 'O Allah's Messenger! How is the Divine Inspiration revealed to you?' Allah's Messenger replied: 'Sometimes it comes to me like the ringing of a bell, and that is the hardest on me; then it leaves me while I have grasped what was said. At other times, the Angel comes to me in the likeness of a man and speaks to me, and I retain what he says.' 'Aisha added: 'Verily I saw the Prophet being inspired on a very cold day, and when the Inspiration was over, his forehead was dripping with sweat.'",
+            urduText = "ام المؤمنین حضرت عائشہ رضی اللہ عنہا سے روایت ہے کہ حارث بن ہشام رضی اللہ عنہ نے رسول اللہ صلی اللہ علیہ وسلم سے پوچھا: یا رسول اللہ! آپ کے پاس وحی کس طرح آتی ہے؟ رسول اللہ نے فرمایا: 'کبھی تو میرے پاس گھنٹی کی جھنکار کی طرح آتی ہے اور یہ مجھ پر سب سے زیادہ سخت ہوتی ہے، پھر جب وہ کیفیت مجھ سے دور ہوتی ہے تو جو کچھ فرشتے نے کہا ہوتا ہے مجھے یاد ہو چکا ہوتا ہے۔ اور کبھی فرشتہ میرے سامنے ایک مرد کی صورت میں آتا ہے اور مجھ سے کلام کرتا ہے اور میں اس کی کہی ہوئی بات کو یاد کر لیتا ہوں۔' حضرت عائشہ فرماتی ہیں کہ سخت سردی کے دن میں نے دیکھا کہ آپ پر وحی نازل ہوئی اور جب وہ کیفیت ختم ہوئی تو آپ کی پیشانی مبارک سے پسینہ بہہ رہا تھا۔",
+            narrator = "Aisha, Mother of the Believers (رضي الله عنها)",
+            grade = "Sahih",
+            gradedBy = "Imam al-Bukhari",
+            chapterTitleArabic = "باب كَيْفَ كَانَ بَدْءُ الْوَحْىِ",
+            chapterTitleEnglish = "How Revelation was revealed",
+            chapterTitleUrdu = "وحی کی کیفیات",
+            sourceUrl = "https://sunnah.com/bukhari:2",
+            isBookmarked = false,
+            sourceType = SourceType.CANONICAL_VERIFIED
+        ),
+        // Sahih Bukhari 8
         HadithEntity(
             id = "bukhari_8",
             collectionName = "bukhari",
@@ -149,47 +103,190 @@ object SeedData {
             chapterTitleEnglish = "Islam is based on five principles",
             chapterTitleUrdu = "اسلام کی بنیاد پانچ باتوں پر ہے",
             sourceUrl = "https://sunnah.com/bukhari:8",
-            isBookmarked = false
+            isBookmarked = false,
+            sourceType = SourceType.CANONICAL_VERIFIED
         ),
-        // Bukhari Hadith 13
+        // Sahih Bukhari 9
+        HadithEntity(
+            id = "bukhari_9",
+            collectionName = "bukhari",
+            bookNumber = "2",
+            hadithNumber = "9",
+            inBookReference = "Book 2, Hadith 2",
+            arabicText = "حَدَّثَنَا عَبْدُ اللَّهِ بْنُ مُحَمَّدٍ، قَالَ حَدَّثَنَا أَبُو عَامِرٍ الْعَقَدِيُّ، قَالَ حَدَّثَنَا سُلَيْمَانُ بْنُ بِلاَلٍ، عَنْ عَبْدِ اللَّهِ بْنِ دِينَارٍ، عَنْ أَبِي صَالِحٍ، عَنْ أَبِي هُرَيْرَةَ ـ رضى الله عنه ـ عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ:\n\n«الإِيمَانُ بِضْعٌ وَسِتُّونَ شُعْبَةً، وَالْحَيَاءُ شُعْبَةٌ مِنَ الإِيمَانِ».",
+            englishText = "Narrated Abu Huraira: The Prophet (peace be upon him) said: 'Faith (Belief) has more than sixty branches (i.e. parts), and Haya (modesty, self-respect) is a branch of faith.'",
+            urduText = "حضرت ابوہریرہ رضی اللہ عنہ سے روایت ہے کہ نبی کریم صلی اللہ علیہ وسلم نے فرمایا: 'ایمان کی ساٹھ سے کچھ اوپر شاخیں ہیں، اور حیا بھی ایمان کی ایک اہم شاخ ہے۔'",
+            narrator = "Abu Hurairah (رضي الله عنه)",
+            grade = "Sahih",
+            gradedBy = "Imam al-Bukhari",
+            chapterTitleArabic = "باب أُمُورُ الإِيمَانِ",
+            chapterTitleEnglish = "Matters of Faith",
+            chapterTitleUrdu = "ایمان کے امور اور شاخیں",
+            sourceUrl = "https://sunnah.com/bukhari:9",
+            isBookmarked = false,
+            sourceType = SourceType.CANONICAL_VERIFIED
+        ),
+        // Sahih Bukhari 10
+        HadithEntity(
+            id = "bukhari_10",
+            collectionName = "bukhari",
+            bookNumber = "2",
+            hadithNumber = "10",
+            inBookReference = "Book 2, Hadith 3",
+            arabicText = "حَدَّثَنَا سَعِيدُ بْنُ يَحْيَى بْنِ سَعِيدٍ الْقُرَشِيُّ، قَالَ حَدَّثَنَا أَبِي قَالَ، حَدَّثَنَا أَبُو بُرْدَةَ بْنُ عَبْدِ اللَّهِ بْنِ أَبِي بُرْدَةَ، عَنْ أَبِي بُرْدَةَ، عَنْ أَبِي مُوسَى، قَالَ قَالُوا يَا رَسُولَ اللَّهِ أَىُّ الإِسْلاَمِ أَفْضَلُ قَالَ:\n\n«مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ».",
+            englishText = "Narrated Abu Musa: Some people asked Allah's Messenger (peace be upon him): 'Whose Islam is the best?' He replied: 'One from whose tongue and hands Muslims are safe.'",
+            urduText = "حضرت ابو موسیٰ اشعری رضی اللہ عنہ سے روایت ہے کہ صحابہ نے عرض کیا: یا رسول اللہ! کون سا مسلمان افضل ہے؟ آپ نے فرمایا: 'وہ جس کی زبان اور ہاتھ سے دوسرے مسلمان محفوظ رہیں۔'",
+            narrator = "Abu Musa al-Ash'ari (رضي الله عنه)",
+            grade = "Sahih",
+            gradedBy = "Imam al-Bukhari",
+            chapterTitleArabic = "باب الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ",
+            chapterTitleEnglish = "A Muslim is the one from whose tongue and hands Muslims are safe",
+            chapterTitleUrdu = "کامل مسلمان وہ ہے جس کے ہاتھ اور زبان سے مسلمان محفوظ رہیں",
+            sourceUrl = "https://sunnah.com/bukhari:10",
+            isBookmarked = false,
+            sourceType = SourceType.CANONICAL_VERIFIED
+        ),
+        // Sahih Bukhari 13
         HadithEntity(
             id = "bukhari_13",
             collectionName = "bukhari",
             bookNumber = "2",
             hadithNumber = "13",
             inBookReference = "Book 2, Hadith 6",
-            arabicText = "حَدَّثَنَا مُسَدَّدٌ، قَالَ حَدَّثَنَا يَحْيَى، عَنْ شُعْبَةَ، عَنْ قَتَادَةَ، عَنْ أَنَسٍ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ: وَعَنْ حُسَيْنٍ الْمُعَلِّمِ، قَالَ حَدَّثَنَا قَتَادَةُ، عَنْ أَنَسٍ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ:\n\n«لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ».",
-            englishText = "Narrated Anas (may Allah be pleased with him): The Prophet (peace and blessings be upon him) said: 'None of you will have faith until he loves for his brother (or neighbor) what he loves for himself.'",
+            arabicText = "حَدَّثَنَا مُسَدَّدٌ، قَالَ حَدَّثَنَا يَحْيَى، عَنْ شُعْبَةَ، عَنْ قَتَادَةَ، عَنْ أَنَسٍ، عَنِ النَّبِيِّ صلى الله عليه وسلم قَالَ:\n\n«لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ».",
+            englishText = "Narrated Anas: The Prophet (peace be upon him) said: 'None of you will have faith until he loves for his brother (or neighbor) what he loves for himself.'",
             urduText = "حضرت انس رضی اللہ عنہ سے روایت ہے کہ نبی کریم صلی اللہ علیہ وسلم نے فرمایا: 'تم میں سے کوئی شخص اس وقت تک سچا مومن نہیں ہو سکتا جب تک کہ وہ اپنے بھائی کے لیے وہی پسند نہ کرے جو اپنے لیے پسند کرتا ہے۔'",
             narrator = "Anas ibn Malik (رضي الله عنه)",
             grade = "Sahih",
             gradedBy = "Imam al-Bukhari",
             chapterTitleArabic = "باب مِنَ الإِيمَانِ أَنْ يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
-            chapterTitleEnglish = "To love for one's brother what he loves for himself is part of Faith",
+            chapterTitleEnglish = "To love for one's brother what one loves for himself is part of Faith",
             chapterTitleUrdu = "اپنے بھائی کے لیے وہی چاہنا جو اپنے لیے چاہے، ایمان کا حصہ ہے",
             sourceUrl = "https://sunnah.com/bukhari:13",
-            isBookmarked = true
+            isBookmarked = true,
+            sourceType = SourceType.CANONICAL_VERIFIED
         ),
-        // Muslim Hadith 8 (Hadith of Jibril)
+        // Sahih Bukhari 52
         HadithEntity(
-            id = "muslim_8",
+            id = "bukhari_52",
+            collectionName = "bukhari",
+            bookNumber = "2",
+            hadithNumber = "52",
+            inBookReference = "Book 2, Hadith 45",
+            arabicText = "عَنِ النُّعْمَانِ بْنِ بَشِيرٍ، قَالَ سَمِعْتُ رَسُولَ اللَّهِ صلى الله عليه وسلم يَقُولُ:\n\n«الْحَلاَلُ بَيِّنٌ وَالْحَرَامُ بَيِّنٌ، وَبَيْنَهُمَا مُشَبَّهَاتٌ لاَ يَعْلَمُهَا كَثِيرٌ مِنَ النَّاسِ، فَمَنِ اتَّقَى الْمُشَبَّهَاتِ اسْتَبْرَأَ لِدِينِهِ وَعِرْضِهِ، وَمَنْ وَقَعَ فِي الشُّبُهَاتِ كَرَاعٍ يَرْعَى حَوْلَ الْحِمَى، يُوشِكُ أَنْ يُوَاقِعَهُ، أَلاَ وَإِنَّ لِكُلِّ مَلِكٍ حِمًى، أَلاَ إِنَّ حِمَى اللَّهِ فِي أَرْضِهِ مَحَارِمُهُ، أَلاَ وَإِنَّ فِي الْجَسَدِ مُضْغَةً إِذَا صَلَحَتْ صَلَحَ الْجَسَدُ كُلُّهُ، وَإِذَا فَسَدَتْ فَسَدَ الْجَسَدُ كُلُّهُ، أَلاَ وَهِيَ الْقَلْبُ».",
+            englishText = "Narrated An-Nu'man bin Bashir: I heard Allah's Messenger (peace be upon him) saying: 'Both legal and illegal things are obvious, and in between them are doubtful matters about which many people have no knowledge. So whoever avoids doubtful things saves his religion and honor; and whoever falls into doubtful matters falls into that which is unlawful, like a shepherd grazing near a private pasture, on the verge of grazing inside it. Truly, every king has a sanctuary, and the sanctuary of Allah on earth is what He has forbidden. Truly, in the body there is a piece of flesh: if it is upright, the whole body is upright; and if it is corrupt, the whole body is corrupt. Truly, it is the heart.'",
+            urduText = "حضرت نعمان بن بشیر رضی اللہ عنہ سے روایت ہے کہ میں نے رسول اللہ صلی اللہ علیہ وسلم کو فرماتے سنا: 'حلال بھی واضح ہے اور حرام بھی واضح ہے، اور ان دونوں کے درمیان کچھ مشتبہ چیزیں ہیں جنہیں بہت سے لوگ نہیں جانتے۔ پس جو شخص شبہات سے بچ گیا اس نے اپنے دین اور عزت کو محفوظ کر لیا، اور جو شبہات میں پڑ گیا وہ گویا حرام میں پڑ گیا، اس چرواہے کی طرح جو محفوظ چراگاہ کے اردگرد بکریاں چرائے تو قریب ہے کہ اس میں چرنے لگے۔ سن لو! ہر بادشاہ کی ایک چراگاہ ہوتی ہے اور اللہ کی چراگاہ اس کی حرام کردہ چیزیں ہیں۔ اور سن لو! جسم میں ایک گوشت کا لوتھڑا ہے، جب وہ درست ہو تو سارا جسم درست رہتا ہے اور جب وہ خراب ہو جائے تو سارا جسم خراب ہو جاتا ہے؛ سن لو وہ دل ہے۔'",
+            narrator = "An-Nu'man ibn Bashir (رضي الله عنه)",
+            grade = "Sahih",
+            gradedBy = "Imam al-Bukhari",
+            chapterTitleArabic = "باب فَضْلِ مَنِ اسْتَبْرَأَ لِدِينِهِ",
+            chapterTitleEnglish = "The virtue of one who saves his religion from doubts",
+            chapterTitleUrdu = "مشتبہات سے بچنے کی فضیلت",
+            sourceUrl = "https://sunnah.com/bukhari:52",
+            isBookmarked = false,
+            sourceType = SourceType.CANONICAL_VERIFIED
+        ),
+        // Sahih Muslim 1
+        HadithEntity(
+            id = "muslim_1",
             collectionName = "muslim",
             bookNumber = "1",
-            hadithNumber = "8",
+            hadithNumber = "1",
             inBookReference = "Book 1, Hadith 1",
-            arabicText = "عَنْ يَحْيَى بْنِ يَعْمَرَ، قَالَ كَانَ أَوَّلَ مَنْ قَالَ فِي الْقَدَرِ بِالْبَصْرَةِ مَعْبَدٌ الْجُهَنِيُّ... عَنْ عُمَرَ بْنِ الْخَطَّابِ قَالَ: بَيْنَمَا نَحْنُ عِنْدَ رَسُولِ اللَّهِ صلى الله عليه وسلم ذَاتَ يَوْمٍ إِذْ طَلَعَ عَلَيْنَا رَجُلٌ شَدِيدُ بَيَاضِ الثِّيَابِ شَدِيدُ سَوَادِ الشَّعَرِ لاَ يُرَى عَلَيْهِ أَثَرُ السَّفَرِ وَلاَ يَعْرِفُهُ مِنَّا أَحَدٌ حَتَّى جَلَسَ إِلَى النَّبِيِّ صلى الله عليه وسلم... قَالَ: يَا مُحَمَّدُ أَخْبِرْنِي عَنِ الإِسْلاَمِ. فَقَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم:\n\n«الإِسْلاَمُ أَنْ تَشْهَدَ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَتُقِيمَ الصَّلاَةَ، وَتُؤْتِيَ الزَّكَاةَ، وَتَصُومَ رَمَضَانَ، وَتَحُجَّ الْبَيْتَ إِنِ اسْتَطَعْتَ إِلَيْهِ سَبِيلاً». قَالَ صَدَقْتَ... قَالَ: فَأَخْبِرْنِي عَنِ الإِحْسَانِ. قَالَ:\n\n«أَنْ تَعْبُدَ اللَّهَ كَأَنَّكَ تَرَاهُ فَإِنْ لَمْ تَكُنْ تَرَاهُ فَإِنَّهُ يَرَاكَ».",
-            englishText = "Narrated 'Umar ibn al-Khattab: One day while we were sitting with the Messenger of Allah (peace be upon him) there appeared before us a man whose clothes were exceedingly white and whose hair was exceedingly black; no signs of journeying were to be seen on him and none of us knew him... He said: 'O Muhammad, inform me about Islam.' The Messenger of Allah replied: 'Islam is to testify that there is no god but Allah and Muhammad is the Messenger of Allah, to perform prayers, to give Zakat, to fast in Ramadan, and to make the pilgrimage to the House if you are able.' He said: 'You have spoken the truth.' He then said: 'Inform me about Ihsan (excellence).' The Prophet replied: 'It is to worship Allah as though you see Him, and even if you do not see Him, He sees you.'",
-            urduText = "حضرت عمر بن خطاب رضی اللہ عنہ نے فرمایا: ایک دن ہم رسول اللہ صلی اللہ علیہ وسلم کے پاس بیٹھے تھے کہ اچانک ایک آدمی ہمارے سامنے ظاہر ہوا، جس کے کپڑے انتہائی سفید اور بال نہایت سیاہ تھے، اس پر سفر کا کوئی اثر نظر نہیں آتا تھا اور ہم میں سے کوئی اسے پہچانتا بھی نہیں تھا... اس نے کہا: اے محمد! مجھے اسلام کے بارے میں بتائیے۔ رسول اللہ نے فرمایا: 'اسلام یہ ہے کہ تم گواہی دو کہ اللہ کے سوا کوئی معبود نہیں اور محمد اللہ کے رسول ہیں، نماز قائم کرو، زکوٰۃ دو، رمضان کے روزے رکھو اور اگر استطاعت ہو تو بیت اللہ کا حج کرو۔' اس نے کہا: آپ نے سچ فرمایا... پھر پوچھا: مجھے احسان کے بارے میں بتائیے۔ آپ نے فرمایا: 'احسان یہ ہے کہ تم اللہ کی عبادت اس طرح کرو گویا تم اسے دیکھ رہے ہو، اور اگر تم اسے نہ دیکھ سکو تو یقیناً وہ تمہیں دیکھ رہا ہے۔'",
+            arabicText = "عَنْ يَحْيَى بْنِ يَعْمَرَ، قَالَ كَانَ أَوَّلَ مَنْ قَالَ فِي الْقَدَرِ بِالْبَصْرَةِ مَعْبَدٌ الْجُهَنِيُّ... عَنْ عُمَرَ بْنِ الْخَطَّابِ قَالَ: بَيْنَمَا نَحْنُ عِنْدَ رَسُولِ اللَّهِ صلى الله عليه وسلم ذَاتَ يَوْمٍ إِذْ طَلَعَ عَلَيْنَا رَجُلٌ شَدِيدُ بَيَاضِ الثِّيَابِ شَدِيدُ سَوَادِ الشَّعَرِ لاَ يُرَى عَلَيْهِ أَثَرُ السَّفَرِ وَلاَ يَعْرِفُهُ مِنَّا أَحَدٌ... فَقَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم:\n\n«الإِسْلاَمُ أَنْ تَشْهَدَ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَتُقِيمَ الصَّلاَةَ، وَتُؤْتِيَ الزَّكَاةَ، وَتَصُومَ رَمَضَانَ، وَتَحُجَّ الْبَيْتَ إِنِ اسْتَطَعْتَ إِلَيْهِ سَبِيلاً... وَالإِيمَانُ أَنْ تُؤْمِنَ بِاللَّهِ وَمَلاَئِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ وَالْيَوْمِ الآخِرِ وَتُؤْمِنَ بِالْقَدَرِ خَيْرِهِ وَشَرِّهِ».",
+            englishText = "It is narrated on the authority of 'Umar ibn al-Khattab: One day while we were sitting with the Messenger of Allah (peace be upon him), there appeared before us a man dressed in extremely white clothes and with extremely black hair... The Messenger of Allah said: 'Islam is to testify that there is no deity worthy of worship but Allah and that Muhammad is the Messenger of Allah, to establish prayer, to pay Zakat, to fast Ramadan, and to perform Hajj to the House if you can find a way... And Faith is to believe in Allah, His Angels, His Books, His Messengers, the Last Day, and to believe in Destiny, its good and its evil.'",
+            urduText = "حضرت عمر بن خطاب رضی اللہ عنہ سے روایت ہے: ایک دن ہم رسول اللہ صلی اللہ علیہ وسلم کے پاس بیٹھے تھے کہ اچانک ایک شخص ظاہر ہوا جس کے کپڑے انتہائی سفید اور بال بے حد سیاہ تھے، اس پر سفر کا کوئی اثر نہ تھا... رسول اللہ نے فرمایا: 'اسلام یہ ہے کہ تم گواہی دو کہ اللہ کے سوا کوئی معبود نہیں اور محمد اللہ کے رسول ہیں، نماز قائم کرو، زکوٰۃ دو، رمضان کے روزے رکھو اور اگر استطاعت ہو تو بیت اللہ کا حج کرو... اور ایمان یہ ہے کہ تم اللہ پر، اس کے فرشتوں پر، اس کی کتابوں پر، اس کے رسولوں پر، آخرت کے دن پر اور تقدیر کی اچھائی اور برائی پر یقین رکھو۔'",
             narrator = "Umar ibn al-Khattab (رضي الله عنه)",
             grade = "Sahih",
             gradedBy = "Imam Muslim",
-            chapterTitleArabic = "باب بَيَانِ الإِيمَانِ وَالإِسْلاَمِ وَالإِحْسَانِ",
-            chapterTitleEnglish = "The Explanation of Faith, Islam, and Excellence (Ihsan)",
-            chapterTitleUrdu = "ایمان، اسلام اور احسان کا بیان",
-            sourceUrl = "https://sunnah.com/muslim:8",
-            isBookmarked = false
+            chapterTitleArabic = "باب مَعْرِفَةِ الإِيمَانِ وَالإِسْلاَمِ وَالْقَدَرِ",
+            chapterTitleEnglish = "Clarification of Faith, Islam and Destiny",
+            chapterTitleUrdu = "ایمان، اسلام اور تقدیر کا بیان",
+            sourceUrl = "https://sunnah.com/muslim:1",
+            isBookmarked = true,
+            sourceType = SourceType.CANONICAL_VERIFIED
         ),
-        // Muslim Hadith 2564
+        // Sahih Muslim 16
+        HadithEntity(
+            id = "muslim_16",
+            collectionName = "muslim",
+            bookNumber = "1",
+            hadithNumber = "16",
+            inBookReference = "Book 1, Hadith 74",
+            arabicText = "عَنْ أَبِي هُرَيْرَةَ، عَنْ رَسُولِ اللَّهِ صلى الله عليه وسلم قَالَ:\n\n«مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيُكْرِمْ جَارَهُ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيُكْرِمْ ضَيْفَهُ».",
+            englishText = "Abu Huraira reported that the Messenger of Allah (peace be upon him) said: 'Whoever believes in Allah and the Last Day should speak good or remain silent; and whoever believes in Allah and the Last Day should be hospitable to his neighbor; and whoever believes in Allah and the Last Day should honor his guest.'",
+            urduText = "حضرت ابوہریرہ رضی اللہ عنہ سے روایت ہے کہ رسول اللہ صلی اللہ علیہ وسلم نے فرمایا: 'جو شخص اللہ اور آخرت کے دن پر ایمان رکھتا ہو اسے چاہیے کہ اچھی بات کہے یا خاموش رہے؛ اور جو اللہ اور آخرت پر ایمان رکھتا ہو وہ اپنے پڑوسی کا احترام کرے؛ اور جو اللہ اور آخرت پر ایمان رکھتا ہو وہ اپنے مہمان کی عزت کرے۔'",
+            narrator = "Abu Hurairah (رضي الله عنه)",
+            grade = "Sahih",
+            gradedBy = "Imam Muslim",
+            chapterTitleArabic = "باب الْحَثِّ عَلَى إِكْرَامِ الْجَارِ وَالضَّيْفِ وَلُزُومِ الصَّمْتِ",
+            chapterTitleEnglish = "Urging hospitality to neighbors and guests, and maintaining silence except for good",
+            chapterTitleUrdu = "پڑوسی اور مہمان کی عزت اور خیر کے سوا خاموشی کی ترغیب",
+            sourceUrl = "https://sunnah.com/muslim:16",
+            isBookmarked = false,
+            sourceType = SourceType.CANONICAL_VERIFIED
+        ),
+        // Sahih Muslim 23
+        HadithEntity(
+            id = "muslim_23",
+            collectionName = "muslim",
+            bookNumber = "2",
+            hadithNumber = "23",
+            inBookReference = "Book 2, Hadith 1",
+            arabicText = "عَنْ أَبِي مَالِكٍ الأَشْعَرِيِّ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم:\n\n«الطُّهُورُ شَطْرُ الإِيمَانِ، وَالْحَمْدُ لِلَّهِ تَمْلأُ الْمِيزَانَ، وَسُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ تَمْلآنِ ـ أَوْ تَمْلأُ ـ مَا بَيْنَ السَّمَاوَاتِ وَالأَرْضِ، وَالصَّلاَةُ نُورٌ، وَالصَّدَقَةُ بُرْهَانٌ، وَالصَّبْرُ ضِيَاءٌ، وَالْقُرْآنُ حُجَّةٌ لَكَ أَوْ عَلَيْكَ، كُلُّ النَّاسِ يَغْدُو فَبَائِعٌ نَفْسَهُ فَمُعْتِقُهَا أَوْ مُوبِقُهَا».",
+            englishText = "Abu Malik Al-Ash'ari reported: The Messenger of Allah (peace be upon him) said: 'Cleanliness (purification) is half of faith and Alhamdulillah (Praise be to Allah) fills the scale, and SubhanAllah and Alhamdulillah fill what is between heaven and earth. Prayer is a light, charity is a proof, patience is illumination, and the Qur'an is an argument for you or against you. Every person goes out in the morning and sells himself, either freeing himself or bringing about his ruin.'",
+            urduText = "حضرت ابو مالک اشعری رضی اللہ عنہ سے روایت ہے کہ رسول اللہ صلی اللہ علیہ وسلم نے فرمایا: 'طہارت نصف ایمان ہے، اور الحمد للہ میزان کو بھر دیتا ہے، اور سبحان اللہ اور الحمد للہ آسمانوں اور زمین کے درمیان کے خلا کو بھر دیتے ہیں۔ اور نماز نور ہے، صدقہ برہان و دلیل ہے، صبر روشنی ہے اور قرآن تمہارے حق میں یا تمہارے خلاف حجت ہے۔ ہر انسان صبح کرتا ہے اور اپنی جان کا سودا کرتا ہے، یا تو اسے آزاد کر لیتا ہے یا اسے تباہ کر دیتا ہے۔'",
+            narrator = "Abu Malik al-Ash'ari (رضي الله عنه)",
+            grade = "Sahih",
+            gradedBy = "Imam Muslim",
+            chapterTitleArabic = "باب فَضْلِ الْوُضُوءِ",
+            chapterTitleEnglish = "The virtue of Wudu and purification",
+            chapterTitleUrdu = "وضو اور طہارت کی فضیلت",
+            sourceUrl = "https://sunnah.com/muslim:23",
+            isBookmarked = true,
+            sourceType = SourceType.CANONICAL_VERIFIED
+        ),
+        // Sahih Muslim 1900 (Guiding to Goodness)
+        HadithEntity(
+            id = "muslim_1900",
+            collectionName = "muslim",
+            bookNumber = "33",
+            hadithNumber = "1900",
+            inBookReference = "Book 33, Hadith 1893",
+            arabicText = "عَنْ أَبِي مَسْعُودٍ الأَنْصَارِيِّ، قَالَ: جَاءَ رَجُلٌ إِلَى النَّبِيِّ صلى الله عليه وسلم فَقَالَ: إِنِّي أُبْدِعَ بِي فَاحْمِلْنِي. فَقَالَ: «مَا عِنْدِي». فَقَالَ رَجُلٌ: يَا رَسُولَ اللَّهِ أَنَا أَدُلُّهُ عَلَى مَنْ يَحْمِلُهُ. فَقَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم:\n\n«مَنْ دَلَّ عَلَى خَيْرٍ فَلَهُ مِثْلُ أَجْرِ فَاعِلِهِ».",
+            englishText = "Abu Mas'ud al-Ansari reported that a man came to the Prophet (peace be upon him) and said: 'My mount has broken down, so provide me with a mount.' The Prophet said: 'I have none.' A man said: 'O Messenger of Allah, I can guide him to someone who will give him a mount.' The Messenger of Allah (peace be upon him) said: 'Whoever guides someone to goodness will have a reward like one who did it.'",
+            urduText = "حضرت ابو مسعود انصاری رضی اللہ عنہ سے روایت ہے کہ ایک شخص رسول اللہ صلی اللہ علیہ وسلم کی خدمت میں حاضر ہوا اور عرض کیا: میری سواری تھک کر رہ گئی ہے، مجھے کوئی سواری عطا فرمائیے۔ آپ نے فرمایا: 'میرے پاس کوئی سواری نہیں۔' ایک اور شخص نے عرض کیا: یا رسول اللہ! میں اس کی رہنمائی ایسے شخص کی طرف کر دیتا ہوں جو اسے سواری دے دے گا۔ اس پر رسول اللہ صلی اللہ علیہ وسلم نے فرمایا: 'جس نے کسی نیکی کی رہنمائی کی، اس کے لیے نیکی کرنے والے کے برابر ثواب ہے۔'",
+            narrator = "Abu Mas'ud al-Ansari (رضي الله عنه)",
+            grade = "Sahih",
+            gradedBy = "Imam Muslim",
+            chapterTitleArabic = "باب فَضْلِ إِعَانَةِ الْغَازِي فِي سَبِيلِ اللَّهِ وَمَنْ دَلَّ عَلَى خَيْرٍ",
+            chapterTitleEnglish = "The virtue of one who guides to goodness",
+            chapterTitleUrdu = "نیکی کی راہ دکھانے والے کی فضیلت",
+            sourceUrl = "https://sunnah.com/muslim:1893",
+            isBookmarked = false,
+            sourceType = SourceType.CANONICAL_VERIFIED
+        ),
+        // Sahih Muslim 1907
+        HadithEntity(
+            id = "muslim_1907",
+            collectionName = "muslim",
+            bookNumber = "32",
+            hadithNumber = "1907",
+            inBookReference = "Book 32, Hadith 82",
+            arabicText = "عَنْ أَنَسٍ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم:\n\n«انْصُرْ أَخَاكَ ظَالِمًا أَوْ مَظْلُومًا». فَقَالَ رَجُلٌ يَا رَسُولَ اللَّهِ أَنْصُرُهُ إِذَا كَانَ مَظْلُومًا، أَفَرَأَيْتَ إِذَا كَانَ ظَالِمًا كَيْفَ أَنْصُرُهُ قَالَ: «تَحْجُزُهُ ـ أَوْ تَمْنَعُهُ ـ مِنَ الظُّلْمِ فَإِنَّ ذَلِكَ نَصْرُهُ».",
+            englishText = "Anas reported Allah's Messenger (peace be upon him) as saying: 'Help your brother, whether he is an oppressor or he is an oppressed one.' A man said: 'O Messenger of Allah! I help him when he is oppressed, but if he is an oppressor, how shall I help him?' The Prophet replied: 'By preventing him or restraining him from committing oppression; that is your help to him.'",
+            urduText = "حضرت انس رضی اللہ عنہ سے روایت ہے کہ رسول اللہ صلی اللہ علیہ وسلم نے فرمایا: 'اپنے بھائی کی مدد کرو خواہ وہ ظالم ہو یا مظلوم۔' ایک شخص نے عرض کیا: یا رسول اللہ! اگر وہ مظلوم ہو تو میں اس کی مدد کروں گا، لیکن اگر وہ ظالم ہو تو میں اس کی مدد کیسے کروں؟ آپ نے فرمایا: 'تم اسے ظلم کرنے سے روکو، یہی اس کی مدد ہے۔'",
+            narrator = "Anas ibn Malik (رضي الله عنه)",
+            grade = "Sahih",
+            gradedBy = "Imam Muslim",
+            chapterTitleArabic = "باب نَصْرِ الأَخِ ظَالِمًا أَوْ مَظْلُومًا",
+            chapterTitleEnglish = "Helping one's brother whether oppressor or oppressed",
+            chapterTitleUrdu = "ظالم اور مظلوم دونوں بھائیوں کی مدد کرنے کا بیان",
+            sourceUrl = "https://sunnah.com/muslim:1907",
+            isBookmarked = false,
+            sourceType = SourceType.CANONICAL_VERIFIED
+        ),
+        // Sahih Muslim 2564
         HadithEntity(
             id = "muslim_2564",
             collectionName = "muslim",
@@ -197,7 +294,7 @@ object SeedData {
             hadithNumber = "2564",
             inBookReference = "Book 32, Hadith 32",
             arabicText = "عَنْ أَبِي هُرَيْرَةَ، أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ:\n\n«إِيَّاكُمْ وَالظَّنَّ فَإِنَّ الظَّنَّ أَكْذَبُ الْحَدِيثِ، وَلاَ تَحَسَّسُوا وَلاَ تَجَسَّسُوا، وَلاَ تَنَافَسُوا وَلاَ تَحَاسَدُوا، وَلاَ تَبَاغَضُوا وَلاَ تَدَابَرُوا، وَكُونُوا عِبَادَ اللَّهِ إِخْوَانًا».",
-            englishText = "Abu Huraira reported Allah's Messenger (peace be upon him) as saying: 'Beware of suspicion, for suspicion is the worst of false tales; and do not look for the others' faults and do not spy, and do not be jealous of one another, and do not hate one another, and do not turn away from one another, and be, servants of Allah, brothers.'",
+            englishText = "Abu Huraira reported Allah's Messenger (peace be upon him) as saying: 'Beware of suspicion, for suspicion is the worst of false tales; and do not look for others' faults and do not spy, and do not be jealous of one another, and do not hate one another, and do not turn away from one another, and be, servants of Allah, brothers.'",
             urduText = "حضرت ابوہریرہ رضی اللہ عنہ سے روایت ہے کہ رسول اللہ صلی اللہ علیہ وسلم نے فرمایا: 'بدگمانی سے بچو، کیونکہ بدگمانی سب سے جھوٹی بات ہے۔ اور نہ لوگوں کے عیوب ٹٹولو، نہ جاسوسی کرو، نہ آپس میں حسد کرو، نہ بغض رکھو، اور نہ ایک دوسرے سے پیٹھ پھیرو؛ اور اللہ کے بندے بھائی بھائی بن کر رہو۔'",
             narrator = "Abu Hurairah (رضي الله عنه)",
             grade = "Sahih",
@@ -206,102 +303,8 @@ object SeedData {
             chapterTitleEnglish = "Prohibition of Suspicion, Spying, and Malice",
             chapterTitleUrdu = "بدگمانی، جاسوسی اور بغض کی ممانعت",
             sourceUrl = "https://sunnah.com/muslim:2564",
-            isBookmarked = false
-        ),
-        // Abu Dawud Hadith 4941
-        HadithEntity(
-            id = "abudawud_4941",
-            collectionName = "abudawud",
-            bookNumber = "43",
-            hadithNumber = "4941",
-            inBookReference = "Book 43, Hadith 169",
-            arabicText = "حَدَّثَنَا مُسَدَّدٌ، حَدَّثَنَا سُفْيَانُ، عَنْ عَمْرِو بْنِ دِينَارٍ، عَنْ أَبِي قَابُوسَ، عَنْ عَبْدِ اللَّهِ بْنِ عَمْرٍو، يَبْلُغُ بِهِ النَّبِيَّ صلى الله عليه وسلم:\n\n«الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ، ارْحَمُوا أَهْلَ الأَرْضِ يَرْحَمْكُمْ مَنْ فِي السَّمَاءِ».",
-            englishText = "Narrated Abdullah ibn Amr: The Prophet (peace be upon him) said: 'The compassionate ones are shown mercy by the Most Merciful. Show mercy to those who are on earth, and He Who is in heaven will show mercy to you.'",
-            urduText = "حضرت عبداللہ بن عمرو رضی اللہ عنہ سے روایت ہے کہ رسول اللہ صلی اللہ علیہ وسلم نے فرمایا: 'رحم کرنے والوں پر رحمن رحم فرماتا ہے۔ تم زمین والوں پر رحم کرو، آسمان والا تم پر رحم فرمائے گا۔'",
-            narrator = "Abdullah ibn Amr (رضي الله عنه)",
-            grade = "Sahih",
-            gradedBy = "Al-Albani",
-            chapterTitleArabic = "باب فِي الرَّحْمَةِ",
-            chapterTitleEnglish = "Regarding Mercy and Compassion",
-            chapterTitleUrdu = "رحم اور شفقت کا بیان",
-            sourceUrl = "https://sunnah.com/abudawud:4941",
-            isBookmarked = false
-        ),
-        // Tirmidhi Hadith 2516
-        HadithEntity(
-            id = "tirmidhi_2516",
-            collectionName = "tirmidhi",
-            bookNumber = "38",
-            hadithNumber = "2516",
-            inBookReference = "Book 38, Hadith 59",
-            arabicText = "عَنِ ابْنِ عَبَّاسٍ، قَالَ كُنْتُ خَلْفَ رَسُولِ اللَّهِ صلى الله عليه وسلم يَوْمًا فَقَالَ:\n\n«يَا غُلاَمُ إِنِّي أُعَلِّمُكَ كَلِمَاتٍ: احْفَظِ اللَّهَ يَحْفَظْكَ، احْفَظِ اللَّهَ تَجِدْهُ تُجَاهَكَ، إِذَا سَأَلْتَ فَاسْأَلِ اللَّهَ، وَإِذَا اسْتَعَنْتَ فَاسْتَعِنْ بِاللَّهِ، وَاعْلَمْ أَنَّ الأُمَّةَ لَوِ اجْتَمَعَتْ عَلَى أَنْ يَنْفَعُوكَ بِشَىْءٍ لَمْ يَنْفَعُوكَ إِلاَّ بِشَىْءٍ قَدْ كَتَبَهُ اللَّهُ لَكَ، وَلَوِ اجْتَمَعُوا عَلَى أَنْ يَضُرُّوكَ بِشَىْءٍ لَمْ يَضُرُّوكَ إِلاَّ بِشَىْءٍ قَدْ كَتَبَهُ اللَّهُ عَلَيْكَ، رُفِعَتِ الأَقْلاَمُ وَجَفَّتِ الصُّحُفُ».",
-            englishText = "Ibn Abbas narrated: 'One day I was behind the Messenger of Allah (peace be upon him) and he said: O young man, I will teach you some words: Be mindful of Allah and Allah will protect you. Be mindful of Allah and you will find Him in front of you. If you ask, ask from Allah; and if you seek help, seek help from Allah. And know that if the whole nation were to gather together to benefit you with something, they would only benefit you with what Allah has already written for you. And if they gather to harm you with something, they would only harm you with what Allah has already decreed against you. The pens have been lifted and the pages have dried.'",
-            urduText = "حضرت ابن عباس رضی اللہ عنہما نے فرمایا: ایک روز میں رسول اللہ صلی اللہ علیہ وسلم کے پیچھے سواری پر تھا۔ آپ نے فرمایا: 'اے لڑکے! میں تمہیں چند اہم باتیں سکھاتا ہوں: اللہ کے احکام کی حفاظت کرو، اللہ تمہاری حفاظت فرمائے گا۔ اللہ کے حقوق کا خیال رکھو، تم اسے اپنے سامنے پاؤ گے۔ جب مانگنا ہو تو اللہ ہی سے مانگو، اور جب مدد طلب کرنی ہو تو اللہ ہی سے مدد چاہو۔ اور یہ جان لو کہ اگر تمام امت مل کر بھی تمہیں کوئی فائدہ پہنچانا چاہے تو تمہیں اتنا ہی فائدہ پہنچا سکتی ہے جتنا اللہ نے تمہارے مقدر میں لکھ دیا ہے؛ اور اگر سب مل کر تمہیں کوئی نقصان پہنچانا چاہیں تو تمہیں اتنا ہی نقصان پہنچا سکتے ہیں جتنا اللہ نے تمہارے مقدر میں لکھ دیا ہے۔ قلم اٹھا لیے گئے اور صحیفے خشک ہو چکے ہیں۔'",
-            narrator = "Abdullah ibn Abbas (رضي الله عنهما)",
-            grade = "Hasan Sahih",
-            gradedBy = "Abu 'Isa at-Tirmidhi",
-            chapterTitleArabic = "باب حِفْظِ اللَّهِ وَالتَّوَكُّلِ عَلَيْهِ",
-            chapterTitleEnglish = "Being mindful of Allah and reliance upon Him",
-            chapterTitleUrdu = "اللہ کے احکامات کی حفاظت اور توکل",
-            sourceUrl = "https://sunnah.com/tirmidhi:2516",
-            isBookmarked = true
-        ),
-        // Ibn Majah Hadith 224
-        HadithEntity(
-            id = "ibnmajah_224",
-            collectionName = "ibnmajah",
-            bookNumber = "1",
-            hadithNumber = "224",
-            inBookReference = "Book 1, Hadith 224",
-            arabicText = "حَدَّثَنَا هِشَامُ بْنُ عَمَّارٍ، حَدَّثَنَا حَفْصُ بْنُ سُلَيْمَانَ، حَدَّثَنَا كَثِيرُ بْنُ شِنْظِيرٍ، عَنْ مُحَمَّدِ بْنِ سِيرِينَ، عَنْ أَنَسِ بْنِ مَالِكٍ، قَالَ قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم:\n\n«طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ، وَوَاضِعُ الْعِلْمِ عِنْدَ غَيْرِ أَهْلِهِ كَمُقَلِّدِ الْخَنَازِيرِ الْجَوْهَرَ وَاللُّؤْلُؤَ وَالذَّهَبَ».",
-            englishText = "It was narrated that Anas bin Malik said: 'The Messenger of Allah (peace be upon him) said: Seeking knowledge is a duty upon every Muslim.'",
-            urduText = "حضرت انس بن مالک رضی اللہ عنہ سے روایت ہے کہ رسول اللہ صلی اللہ علیہ وسلم نے فرمایا: 'علم حاصل کرنا ہر مسلمان پر فرض ہے۔'",
-            narrator = "Anas ibn Malik (رضي الله عنه)",
-            grade = "Sahih",
-            gradedBy = "Al-Albani",
-            chapterTitleArabic = "باب فَضْلِ الْعُلَمَاءِ وَالْحَثِّ عَلَى طَلَبِ الْعِلْمِ",
-            chapterTitleEnglish = "The Virtue of Knowledge and Urging to Seek it",
-            chapterTitleUrdu = "علم کی فضیلت اور حصول علم کی ترغیب",
-            sourceUrl = "https://sunnah.com/ibnmajah:224",
-            isBookmarked = false
-        ),
-        // Muwatta Malik Book 47 Hadith 8
-        HadithEntity(
-            id = "malik_8",
-            collectionName = "malik",
-            bookNumber = "47",
-            hadithNumber = "8",
-            inBookReference = "Book 47, Hadith 8",
-            arabicText = "وَحَدَّثَنِي عَنْ مَالِكٍ، أَنَّهُ قَدْ بَلَغَهُ أَنَّ رَسُولَ اللَّهِ صلى الله عليه وسلم قَالَ:\n\n«بُعِثْتُ لأُتَمِّمَ حُسْنَ الأَخْلاَقِ».",
-            englishText = "Yahya related to me from Malik that he had heard that the Messenger of Allah (peace and blessings be upon him) said: 'I was sent only to perfect noble character and good morals.'",
-            urduText = "حضرت امام مالک سے روایت ہے کہ انہیں خبر پہنچی کہ رسول اللہ صلی اللہ علیہ وسلم نے فرمایا: 'میں اس لیے بھیجا گیا ہوں تاکہ اچھے اخلاق کو پایہ تکمیل تک پہنچاؤں۔'",
-            narrator = "Imam Malik (بلاغ / مرسل صحيح بشواهده)",
-            grade = "Sahih",
-            gradedBy = "Ibn Abd al-Barr / Al-Albani",
-            chapterTitleArabic = "باب مَا جَاءَ فِي حُسْنِ الْخُلُقِ",
-            chapterTitleEnglish = "What Has Been Related About Noble Character",
-            chapterTitleUrdu = "حسن اخلاق کا بیان",
-            sourceUrl = "https://sunnah.com/malik:8",
-            isBookmarked = false
-        ),
-        // Musnad Ahmad Hadith 23489 (The Farewell Pilgrimage Sermon on Human Equality)
-        HadithEntity(
-            id = "ahmad_23489",
-            collectionName = "ahmad",
-            bookNumber = "1",
-            hadithNumber = "23489",
-            inBookReference = "Musnad Ahmad 23489",
-            arabicText = "حَدَّثَنَا إِسْمَاعِيلُ، حَدَّثَنَا سَعِيدٌ الْجُرَيْرِيُّ، عَنْ أَبِي نَضْرَةَ، حَدَّثَنِي مَنْ سَمِعَ خُطْبَةَ رَسُولِ اللَّهِ صلى الله عليه وسلم فِي وَسَطِ أَيَّامِ التَّشْرِيقِ فَقَالَ:\n\n«يَا أَيُّهَا النَّاسُ، أَلاَ إِنَّ رَبَّكُمْ وَاحِدٌ، وَإِنَّ أَبَاكُمْ وَاحِدٌ، أَلاَ لاَ فَضْلَ لِعَرَبِيٍّ عَلَى أَعْجَمِيٍّ، وَلاَ لِعَجَمِيٍّ عَلَى عَرَبِيٍّ، وَلاَ لأَحْمَرَ عَلَى أَسْوَدَ، وَلاَ أَسْوَدَ عَلَى أَحْمَرَ إِلاَّ بِالتَّقْوَى، أَبَلَّغْتُ؟ قَالُوا: بَلَّغَ رَسُولُ اللَّهِ صلى الله عليه وسلم».",
-            englishText = "Narrated by someone who heard the sermon of Allah's Messenger (peace be upon him) during the days of Tashreeq: 'O people, verily your Lord is One and your father is one. Behold, there is no superiority for an Arab over a non-Arab, nor for a non-Arab over an Arab, nor for a red person over a black person, nor for a black person over a red person except by piety (taqwa). Have I conveyed the message?' They said: 'The Messenger of Allah has conveyed it.'",
-            urduText = "ایام تشریق میں رسول اللہ صلی اللہ علیہ وسلم کے خطبے سے روایت ہے کہ آپ نے فرمایا: 'اے لوگو! سن لو کہ تمہارا رب ایک ہے اور تمہارا باپ (آدم) ایک ہے۔ خبردار! کسی عربی کو کسی عجمی پر اور کسی عجمی کو کسی عربی پر، نہ کسی گورے کو کسی کالے پر اور نہ کسی کالے کو کسی گورے پر کوئی فضیلت حاصل ہے سوائے تقویٰ کے۔ کیا میں نے پیغام پہنچا دیا؟ صحابہ نے عرض کیا: رسول اللہ نے پیغام پہنچا دیا۔'",
-            narrator = "Sahabi from the Farewell Pilgrimage (رضي الله عنه)",
-            grade = "Sahih",
-            gradedBy = "Shu'ayb al-Arna'ut / Al-Albani",
-            chapterTitleArabic = "خطبة حجة الوداع في المساواة والتقوى",
-            chapterTitleEnglish = "The Farewell Sermon: Equality of Mankind and Piety",
-            chapterTitleUrdu = "خطبہ حجۃ الوداع: انسانی مساوات اور تقویٰ",
-            sourceUrl = "https://sunnah.com/ahmad:23489",
-            isBookmarked = true
+            isBookmarked = false,
+            sourceType = SourceType.CANONICAL_VERIFIED
         )
     )
 }

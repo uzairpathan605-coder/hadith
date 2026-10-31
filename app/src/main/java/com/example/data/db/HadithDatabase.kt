@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
         HadithEntity::class,
         SearchHistoryEntity::class
     ],
-    version = 1,
+    version = 4,
     exportSchema = false
 )
 abstract class HadithDatabase : RoomDatabase() {
@@ -41,16 +41,21 @@ abstract class HadithDatabase : RoomDatabase() {
                     HadithDatabase::class.java,
                     "hadith_library.db"
                 )
+                    .createFromAsset("database/hadith_library.db")
+                    .fallbackToDestructiveMigration()
                     .addCallback(object : Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
-                            // Prepopulate with verified authentic canonical dataset
+                        }
+
+                        override fun onOpen(db: SupportSQLiteDatabase) {
+                            super.onOpen(db)
                             CoroutineScope(Dispatchers.IO).launch {
                                 val database = getInstance(context)
                                 val dao = database.hadithDao()
-                                dao.insertCollections(SeedData.collections)
-                                dao.insertBooks(SeedData.books)
-                                dao.insertHadiths(SeedData.hadiths)
+                                if (dao.getHadithCount() < 1000) {
+                                    populateSeedData(database)
+                                }
                             }
                         }
                     })
@@ -58,6 +63,13 @@ abstract class HadithDatabase : RoomDatabase() {
                 INSTANCE = instance
                 instance
             }
+        }
+
+        private suspend fun populateSeedData(database: HadithDatabase) {
+            val dao = database.hadithDao()
+            dao.insertCollections(SeedData.collections)
+            dao.insertBooks(SeedData.books)
+            dao.insertHadiths(SeedData.hadiths)
         }
     }
 }

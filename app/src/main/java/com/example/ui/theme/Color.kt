@@ -2,29 +2,29 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Light Palette (Warm Ivory, Deep Emerald, Antique Gold)
-val EmeraldPrimaryLight = Color(0xFF14453D)
+// Light Palette (Clean White Reading Design, Crisp Dark Text, Subtle Emerald Accents, Minimal Gold)
+val EmeraldPrimaryLight = Color(0xFF0D6E4F)
 val EmeraldOnPrimaryLight = Color(0xFFFFFFFF)
-val EmeraldPrimaryContainerLight = Color(0xFFD2EBE4)
-val EmeraldOnPrimaryContainerLight = Color(0xFF03201B)
+val EmeraldPrimaryContainerLight = Color(0xFFE6F4EA)
+val EmeraldOnPrimaryContainerLight = Color(0xFF064E3B)
 
-val GoldSecondaryLight = Color(0xFFB58428)
+val GoldSecondaryLight = Color(0xFFB48A30)
 val GoldOnSecondaryLight = Color(0xFFFFFFFF)
-val GoldSecondaryContainerLight = Color(0xFFFDE8C5)
-val GoldOnSecondaryContainerLight = Color(0xFF281900)
+val GoldSecondaryContainerLight = Color(0xFFFEF3C7)
+val GoldOnSecondaryContainerLight = Color(0xFF78350F)
 
-val AmberTertiaryLight = Color(0xFF8A5126)
+val AmberTertiaryLight = Color(0xFF047857)
 val AmberOnTertiaryLight = Color(0xFFFFFFFF)
-val AmberTertiaryContainerLight = Color(0xFFFFDBCA)
-val AmberOnTertiaryContainerLight = Color(0xFF351000)
+val AmberTertiaryContainerLight = Color(0xFFD1FAE5)
+val AmberOnTertiaryContainerLight = Color(0xFF064E3B)
 
-val IvoryBackgroundLight = Color(0xFFFAF7F2)
-val InkOnBackgroundLight = Color(0xFF12231E)
-val CreamSurfaceLight = Color(0xFFF4EFE6)
-val InkOnSurfaceLight = Color(0xFF12231E)
-val CreamSurfaceVariantLight = Color(0xFFE8E2D4)
-val MutedOnSurfaceVariantLight = Color(0xFF485A54)
-val OutlineLight = Color(0xFFD3CABE)
+val WhiteBackgroundLight = Color(0xFFFFFFFF)
+val DarkInkOnBackgroundLight = Color(0xFF111827)
+val SoftSurfaceLight = Color(0xFFFBFBFB)
+val DarkInkOnSurfaceLight = Color(0xFF1F2937)
+val NeutralSurfaceVariantLight = Color(0xFFF3F4F6)
+val MutedOnSurfaceVariantLight = Color(0xFF4B5563)
+val OutlineLight = Color(0xFFE5E7EB)
 
 // Dark Palette
 val EmeraldPrimaryDark = Color(0xFF63C4AF)

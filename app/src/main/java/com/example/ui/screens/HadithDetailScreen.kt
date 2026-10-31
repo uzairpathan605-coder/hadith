@@ -10,8 +10,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,22 +29,29 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.FormatSize
-import androidx.compose.material.icons.filled.NavigateBefore
-import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.BottomAppBar
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import com.example.data.sync.SunnahCrossCheckResult
+import com.example.data.sync.SunnahCrossCheckStatus
+import com.example.data.sync.SunnahCrossChecker
+import com.example.ui.theme.SahihGreen
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
@@ -75,9 +80,12 @@ import com.example.data.model.HadithEntity
 import com.example.ui.HadithViewModel
 import com.example.ui.Screen
 import com.example.ui.components.AuthenticityBadge
+import com.example.ui.components.LanguageAvailabilityPills
 import com.example.ui.components.LanguageToggleRow
+import com.example.ui.components.SourceVerificationBadge
 import com.example.ui.theme.AmiriFontFamily
 import com.example.ui.theme.GoldAccent
+import com.example.ui.theme.NotoNastaliqUrduFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -208,7 +216,7 @@ fun HadithDetailScreen(
                                     modifier = Modifier.size(16.dp)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
-                                Text("Sunnah.com", fontSize = 12.sp)
+                                Text("Source Record", fontSize = 12.sp)
                             }
                         }
                     }
@@ -278,7 +286,7 @@ fun HadithDetailScreen(
                 )
             }
 
-            // Metadata card: Collection, Book, In-book ref, Authenticity Grade & Scholar
+            // Metadata card: Collection, Source Type, Authenticity Grade, Languages
             item {
                 hadith?.let { h ->
                     Card(
@@ -302,6 +310,24 @@ fun HadithDetailScreen(
                             }
 
                             Spacer(modifier = Modifier.height(6.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                SourceVerificationBadge(
+                                    sourceType = h.sourceType,
+                                    isOfflineCached = h.isOfflineCached
+                                )
+                                LanguageAvailabilityPills(
+                                    hasArabic = h.hasArabic,
+                                    hasEnglish = h.hasEnglish,
+                                    hasUrdu = h.hasUrdu
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
 
                             if (h.chapterTitleEnglish.isNotBlank()) {
                                 Text(
@@ -400,18 +426,27 @@ fun HadithDetailScreen(
 
                                 Spacer(modifier = Modifier.height(14.dp))
 
-                                Text(
-                                    text = h.arabicText,
-                                    fontFamily = AmiriFontFamily,
-                                    fontSize = arabicFontSize.sp,
-                                    lineHeight = (arabicFontSize * 1.7f).sp,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    textAlign = TextAlign.End,
-                                    style = MaterialTheme.typography.bodyLarge.copy(
-                                        textDirection = TextDirection.Rtl
-                                    ),
-                                    modifier = Modifier.fillMaxWidth()
-                                )
+                                if (h.hasArabic) {
+                                    Text(
+                                        text = h.arabicText,
+                                        fontFamily = AmiriFontFamily,
+                                        fontSize = arabicFontSize.sp,
+                                        lineHeight = (arabicFontSize * 1.7f).sp,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        textAlign = TextAlign.End,
+                                        style = MaterialTheme.typography.bodyLarge.copy(
+                                            textDirection = TextDirection.Rtl
+                                        ),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                } else {
+                                    Text(
+                                        text = "Arabic text not supplied by source for this record.",
+                                        fontSize = 13.sp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                                    )
+                                }
                             }
                         }
                     }
@@ -451,7 +486,7 @@ fun HadithDetailScreen(
 
                                 Spacer(modifier = Modifier.height(12.dp))
 
-                                if (h.englishText.isNotBlank()) {
+                                if (h.hasEnglish) {
                                     Text(
                                         text = h.englishText,
                                         fontSize = 15.sp,
@@ -460,12 +495,21 @@ fun HadithDetailScreen(
                                         style = MaterialTheme.typography.bodyLarge
                                     )
                                 } else {
-                                    Text(
-                                        text = "English translation not provided by source for this record.",
-                                        fontSize = 13.sp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
-                                    )
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Info,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text(
+                                            text = "English translation not provided by source for this record.",
+                                            fontSize = 13.sp,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -506,11 +550,12 @@ fun HadithDetailScreen(
 
                                 Spacer(modifier = Modifier.height(12.dp))
 
-                                if (h.urduText.isNotBlank()) {
+                                if (h.hasUrdu) {
                                     Text(
                                         text = h.urduText,
-                                        fontSize = 16.sp,
-                                        lineHeight = 26.sp,
+                                        fontFamily = NotoNastaliqUrduFontFamily,
+                                        fontSize = 17.sp,
+                                        lineHeight = 32.sp,
                                         textAlign = TextAlign.End,
                                         color = MaterialTheme.colorScheme.onSurface,
                                         style = MaterialTheme.typography.bodyMedium.copy(
@@ -519,13 +564,25 @@ fun HadithDetailScreen(
                                         modifier = Modifier.fillMaxWidth()
                                     )
                                 } else {
-                                    Text(
-                                        text = "اردو ترجمہ اس ریکارڈ کے لیے دستیاب نہیں ہے۔",
-                                        fontSize = 13.sp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        textAlign = TextAlign.End,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        Text(
+                                            text = "اردو ترجمہ اس ریکارڈ کے لیے دستیاب نہیں ہے۔",
+                                            fontSize = 13.sp,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            textAlign = TextAlign.End
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Icon(
+                                            imageVector = Icons.Outlined.Info,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -550,7 +607,7 @@ fun HadithDetailScreen(
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "Grade: ${h.grade} • Graded by: ${h.gradedBy}. This narration is preserved from authentic classical manuscripts and verified reference records. Original reference URL: ${h.sourceUrl}",
+                                text = "Grade: ${h.grade} • Graded by: ${h.gradedBy}. Status: ${h.sourceType}. Preserved from authentic reference records. Source link: ${h.sourceUrl}",
                                 fontSize = 11.sp,
                                 lineHeight = 16.sp,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
@@ -559,9 +616,243 @@ fun HadithDetailScreen(
                     }
                 }
             }
+
+            // 4. Sunnah.com Cross-Check & Verification
+            item {
+                hadith?.let { h ->
+                    SunnahCrossCheckCard(
+                        hadith = h,
+                        viewModel = viewModel,
+                        context = context
+                    )
+                }
+            }
         }
     }
 }
+
+@Composable
+private fun SunnahCrossCheckCard(
+    hadith: HadithEntity,
+    viewModel: HadithViewModel,
+    context: Context,
+    modifier: Modifier = Modifier
+) {
+    val apiKey by viewModel.apiKey.collectAsStateWithLifecycle()
+    var isChecking by remember { mutableStateOf(false) }
+    var checkResult by remember { mutableStateOf<SunnahCrossCheckResult?>(null) }
+    val sunnahUrl = remember(hadith) {
+        SunnahCrossChecker.generateSunnahUrl(hadith.collectionName, hadith.hadithNumber)
+    }
+
+    LaunchedEffect(hadith.id, apiKey) {
+        if (apiKey.isBlank()) {
+            checkResult = SunnahCrossCheckResult(
+                status = SunnahCrossCheckStatus.UNAVAILABLE_OR_UNCONFIGURED,
+                title = "State D: API Access Not Configured",
+                message = "Sunnah.com cross-check unavailable — API access not configured.",
+                sunnahUrl = sunnahUrl,
+                isApiConfigured = false
+            )
+        } else {
+            isChecking = true
+            checkResult = viewModel.crossCheckHadith(hadith)
+            isChecking = false
+        }
+    }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .testTag("sunnah_cross_check_card"),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "س",
+                            fontFamily = AmiriFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 16.sp
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column {
+                        Text(
+                            text = "Sunnah.com Cross-Check",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = "Independent scholarly reference cross-check",
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                if (apiKey.isNotBlank()) {
+                    IconButton(
+                        onClick = {
+                            viewModel.viewModelScopeLaunch {
+                                isChecking = true
+                                checkResult = viewModel.crossCheckHadith(hadith)
+                                isChecking = false
+                            }
+                        },
+                        modifier = Modifier.testTag("refresh_cross_check_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Re-check",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            if (isChecking) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = "Querying official Sunnah.com API...",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
+                checkResult?.let { result ->
+                    val (badgeBg, badgeText, iconVector, iconTint) = when (result.status) {
+                        SunnahCrossCheckStatus.MATCHING_RECORD_FOUND -> Quadruple(
+                            Color(0xFFE6F4EA),
+                            Color(0xFF137333),
+                            Icons.Default.CheckCircle,
+                            SahihGreen
+                        )
+                        SunnahCrossCheckStatus.REQUIRES_REVIEW -> Quadruple(
+                            Color(0xFFFEF7E0),
+                            Color(0xFFB06000),
+                            Icons.Default.Warning,
+                            Color(0xFFB06000)
+                        )
+                        SunnahCrossCheckStatus.SOURCE_RECORD_FOUND -> Quadruple(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.onPrimaryContainer,
+                            Icons.Outlined.Info,
+                            MaterialTheme.colorScheme.primary
+                        )
+                        SunnahCrossCheckStatus.UNAVAILABLE_OR_UNCONFIGURED -> Quadruple(
+                            MaterialTheme.colorScheme.surfaceVariant,
+                            MaterialTheme.colorScheme.onSurfaceVariant,
+                            Icons.Outlined.Info,
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    Surface(
+                        color = badgeBg,
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(12.dp),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Icon(
+                                imageVector = iconVector,
+                                contentDescription = null,
+                                tint = iconTint,
+                                modifier = Modifier.size(20.dp).padding(top = 2.dp)
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = result.title,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = badgeText
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = result.message,
+                                    fontSize = 12.sp,
+                                    color = badgeText,
+                                    lineHeight = 17.sp
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Action Buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(sunnahUrl))
+                        context.startActivity(intent)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag("open_sunnah_com_button")
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.OpenInNew,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Sunnah.com Link", fontSize = 12.sp)
+                }
+
+                if (apiKey.isBlank()) {
+                    OutlinedButton(
+                        onClick = { viewModel.navigateTo(Screen.Settings) },
+                        modifier = Modifier.testTag("configure_sunnah_api_key_button")
+                    ) {
+                        Text("Configure API", fontSize = 12.sp)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 
 private fun copyHadithText(context: Context, hadith: HadithEntity) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -570,19 +861,21 @@ private fun copyHadithText(context: Context, hadith: HadithEntity) {
         appendLine("Grade: ${hadith.grade} (${hadith.gradedBy})")
         if (hadith.narrator.isNotBlank()) appendLine("Narrator: ${hadith.narrator}")
         appendLine()
-        appendLine("--- Arabic Matn ---")
-        appendLine(hadith.arabicText)
-        if (hadith.englishText.isNotBlank()) {
+        if (hadith.hasArabic) {
+            appendLine("--- Arabic Matn ---")
+            appendLine(hadith.arabicText)
             appendLine()
+        }
+        if (hadith.hasEnglish) {
             appendLine("--- English Translation ---")
             appendLine(hadith.englishText)
-        }
-        if (hadith.urduText.isNotBlank()) {
             appendLine()
+        }
+        if (hadith.hasUrdu) {
             appendLine("--- Urdu Translation ---")
             appendLine(hadith.urduText)
+            appendLine()
         }
-        appendLine()
         appendLine("Source: ${hadith.sourceUrl}")
     }
     val clip = ClipData.newPlainText("Hadith ${hadith.collectionName} ${hadith.hadithNumber}", formatted)
@@ -595,17 +888,19 @@ private fun shareHadith(context: Context, hadith: HadithEntity) {
         appendLine("Hadith: ${hadith.collectionName.uppercase()} #${hadith.hadithNumber}")
         appendLine("Grade: ${hadith.grade} - ${hadith.gradedBy}")
         appendLine()
-        appendLine(hadith.arabicText)
-        if (hadith.englishText.isNotBlank()) {
+        if (hadith.hasArabic) {
+            appendLine(hadith.arabicText)
             appendLine()
+        }
+        if (hadith.hasEnglish) {
             appendLine(hadith.englishText)
-        }
-        if (hadith.urduText.isNotBlank()) {
             appendLine()
-            appendLine(hadith.urduText)
         }
-        appendLine()
-        appendLine("Read verified hadith: ${hadith.sourceUrl}")
+        if (hadith.hasUrdu) {
+            appendLine(hadith.urduText)
+            appendLine()
+        }
+        appendLine("Read verified record: ${hadith.sourceUrl}")
     }
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"

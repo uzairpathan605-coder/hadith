@@ -45,7 +45,7 @@ data class ApiHadithText(
 @JsonClass(generateAdapter = true)
 data class ApiGrade(
     val grade: String,
-    @Json(name = "graded_by") val gradedBy: String? = null
+    @param:Json(name = "graded_by") val gradedBy: String? = null
 )
 
 @JsonClass(generateAdapter = true)

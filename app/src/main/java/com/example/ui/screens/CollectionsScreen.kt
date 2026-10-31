@@ -1,5 +1,8 @@
 package com.example.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,12 +26,22 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.CloudDownload
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,6 +61,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.model.BookEntity
 import com.example.data.model.CollectionEntity
+import com.example.data.sync.PackDownloadState
 import com.example.ui.HadithViewModel
 import com.example.ui.Screen
 import com.example.ui.components.EmptyStateView
@@ -62,6 +76,7 @@ fun CollectionsScreen(
     modifier: Modifier = Modifier
 ) {
     val collections by viewModel.collections.collectAsStateWithLifecycle()
+    val downloadState by viewModel.packDownloadState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -113,9 +128,145 @@ fun CollectionsScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
+            // Batch Download Card
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.06f)
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Offline Library Packs",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    text = "Download verified narrations for 100% offline reading",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+
+                            when (downloadState) {
+                                is PackDownloadState.Progress -> {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(28.dp),
+                                        strokeWidth = 3.dp,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                                else -> {
+                                    Button(
+                                        onClick = { viewModel.downloadAllCollections() },
+                                        shape = RoundedCornerShape(10.dp),
+                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                                        modifier = Modifier.testTag("download_all_collections_button")
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.CloudDownload,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text("Download All", fontSize = 12.sp)
+                                    }
+                                }
+                            }
+                        }
+
+                        // Progress or Error status
+                        when (val state = downloadState) {
+                            is PackDownloadState.Progress -> {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                LinearProgressIndicator(
+                                    progress = {
+                                        if (state.total > 0) state.downloaded.toFloat() / state.total else 0f
+                                    },
+                                    modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "${state.step} (${state.downloaded}/${state.total})",
+                                    fontSize = 11.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                            is PackDownloadState.Error -> {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ErrorOutline,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = state.message,
+                                        fontSize = 11.sp,
+                                        color = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    if (state.canRetry) {
+                                        OutlinedButton(
+                                            onClick = { viewModel.retryLastDownload() },
+                                            modifier = Modifier.testTag("retry_download_button"),
+                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Refresh,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(14.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text("Retry", fontSize = 11.sp)
+                                        }
+                                    }
+                                }
+                            }
+                            is PackDownloadState.Success -> {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.CheckCircle,
+                                        contentDescription = null,
+                                        tint = Color(0xFF0D6E4F),
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "Saved ${state.importedCount} verified records to offline storage.",
+                                        fontSize = 11.sp,
+                                        color = Color(0xFF0D6E4F),
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                }
+                            }
+                            else -> {}
+                        }
+                    }
+                }
+            }
+
             items(collections, key = { it.name }) { collection ->
                 CollectionListItem(
                     collection = collection,
+                    viewModel = viewModel,
                     onClick = {
                         viewModel.navigateTo(Screen.CollectionDetail(collection.name))
                     }
@@ -128,9 +279,12 @@ fun CollectionsScreen(
 @Composable
 fun CollectionListItem(
     collection: CollectionEntity,
+    viewModel: HadithViewModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val cachedCount by viewModel.getHadithCountForCollection(collection.name).collectAsStateWithLifecycle(initialValue = 0)
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -196,7 +350,10 @@ fun CollectionListItem(
 
                 Spacer(modifier = Modifier.height(6.dp))
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
                     Surface(
                         color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(6.dp)
@@ -210,13 +367,10 @@ fun CollectionListItem(
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Text(
-                        text = "عربي • English • اردو",
-                        fontSize = 11.sp,
-                        color = GoldAccent,
-                        fontWeight = FontWeight.Medium
+                    // Strict Offline State Badge
+                    OfflineStatusBadge(
+                        cachedCount = cachedCount,
+                        totalCount = collection.totalHadith
                     )
                 }
             }
@@ -233,6 +387,46 @@ fun CollectionListItem(
     }
 }
 
+@Composable
+fun OfflineStatusBadge(
+    cachedCount: Int,
+    totalCount: Int
+) {
+    val isFullyDownloaded = cachedCount >= totalCount && totalCount > 0
+    val isPartiallyDownloaded = cachedCount > 0 && !isFullyDownloaded
+
+    val (bgColor, textColor, label) = when {
+        isFullyDownloaded -> Triple(
+            Color(0xFFE6F4EA),
+            Color(0xFF137333),
+            "Fully Downloaded"
+        )
+        isPartiallyDownloaded -> Triple(
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+            MaterialTheme.colorScheme.primary,
+            "Partially Downloaded ($cachedCount offline)"
+        )
+        else -> Triple(
+            MaterialTheme.colorScheme.surfaceVariant,
+            MaterialTheme.colorScheme.onSurfaceVariant,
+            "Available via Online CDN"
+        )
+    }
+
+    Surface(
+        color = bgColor,
+        shape = RoundedCornerShape(6.dp)
+    ) {
+        Text(
+            text = label,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Medium,
+            color = textColor,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollectionDetailScreen(
@@ -243,6 +437,7 @@ fun CollectionDetailScreen(
     val collection by viewModel.getCollection(collectionName).collectAsStateWithLifecycle(initialValue = null)
     val books by viewModel.getBooksForCollection(collectionName).collectAsStateWithLifecycle(initialValue = emptyList())
     val hadiths by viewModel.getHadithsForCollection(collectionName).collectAsStateWithLifecycle(initialValue = emptyList())
+    val downloadState by viewModel.packDownloadState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -317,12 +512,157 @@ fun CollectionDetailScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(modifier = Modifier.height(10.dp))
-                            Text(
-                                text = "Total verified narrations: ${col.totalHadith}",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Total narrations: ${col.totalHadith}",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                OfflineStatusBadge(
+                                    cachedCount = hadiths.size,
+                                    totalCount = col.totalHadith
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Download Pack Action Card
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Download Collection Pack",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    text = "Download verified narrations for ${collection?.titleEnglish ?: collectionName}",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+
+                            when (val state = downloadState) {
+                                is PackDownloadState.Progress -> {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(24.dp),
+                                        strokeWidth = 3.dp,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                                else -> {
+                                    Button(
+                                        onClick = { viewModel.downloadCollectionPack(collectionName) },
+                                        shape = RoundedCornerShape(10.dp),
+                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                                        modifier = Modifier.testTag("download_collection_pack_button")
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Download,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text("Download", fontSize = 12.sp)
+                                    }
+                                }
+                            }
+                        }
+
+                        // Progress, error, or success feedback
+                        when (val state = downloadState) {
+                            is PackDownloadState.Progress -> {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                LinearProgressIndicator(
+                                    progress = {
+                                        if (state.total > 0) state.downloaded.toFloat() / state.total else 0f
+                                    },
+                                    modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "${state.step} (${state.downloaded}/${state.total})",
+                                    fontSize = 11.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                            is PackDownloadState.Error -> {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ErrorOutline,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = state.message,
+                                        fontSize = 11.sp,
+                                        color = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    if (state.canRetry) {
+                                        OutlinedButton(
+                                            onClick = { viewModel.retryLastDownload() },
+                                            modifier = Modifier.testTag("retry_collection_download_button"),
+                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Refresh,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(14.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text("Retry", fontSize = 11.sp)
+                                        }
+                                    }
+                                }
+                            }
+                            is PackDownloadState.Success -> {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.CheckCircle,
+                                        contentDescription = null,
+                                        tint = Color(0xFF0D6E4F),
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "Saved ${state.importedCount} verified records into offline storage.",
+                                        fontSize = 11.sp,
+                                        color = Color(0xFF0D6E4F),
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                }
+                            }
+                            else -> {}
                         }
                     }
                 }
@@ -345,6 +685,9 @@ fun CollectionDetailScreen(
                         book = book,
                         onClick = {
                             viewModel.navigateTo(Screen.BookDetail(collectionName, book.bookNumber))
+                        },
+                        onDownloadBook = {
+                            viewModel.downloadBook(collectionName, book.bookNumber)
                         }
                     )
                 }
@@ -355,7 +698,7 @@ fun CollectionDetailScreen(
                 item {
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "Available Narrations (${hadiths.size})",
+                        text = "Locally Cached Narrations (${hadiths.size})",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
@@ -377,7 +720,7 @@ fun CollectionDetailScreen(
                 item {
                     EmptyStateView(
                         message = "No records cached locally",
-                        tip = "Connect with your Sunnah.com API key in Settings to sync and view live books."
+                        tip = "Tap 'Download' above to download authentic narrations from the open public CDN for offline reading."
                     )
                 }
             }
@@ -389,6 +732,7 @@ fun CollectionDetailScreen(
 fun BookListItem(
     book: BookEntity,
     onClick: () -> Unit,
+    onDownloadBook: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -443,13 +787,17 @@ fun BookListItem(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text(
-                text = "${book.numberOfHadith} Hadiths",
-                fontSize = 11.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.width(6.dp))
+            IconButton(
+                onClick = onDownloadBook,
+                modifier = Modifier.testTag("download_book_button_${book.id}")
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Download,
+                    contentDescription = "Download Book",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
 
             Icon(
                 imageVector = Icons.Default.ArrowForwardIos,
@@ -471,6 +819,7 @@ fun BookDetailScreen(
 ) {
     val hadiths by viewModel.getHadithsForBook(collectionName, bookNumber).collectAsStateWithLifecycle(initialValue = emptyList())
     val collection by viewModel.getCollection(collectionName).collectAsStateWithLifecycle(initialValue = null)
+    val downloadState by viewModel.packDownloadState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -501,6 +850,18 @@ fun BookDetailScreen(
                         )
                     }
                 },
+                actions = {
+                    IconButton(
+                        onClick = { viewModel.downloadBook(collectionName, bookNumber) },
+                        modifier = Modifier.testTag("download_book_top_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Download,
+                            contentDescription = "Download this book",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
@@ -516,14 +877,80 @@ fun BookDetailScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            // Download feedback if active
+            item {
+                when (val state = downloadState) {
+                    is PackDownloadState.Progress -> {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                LinearProgressIndicator(
+                                    progress = {
+                                        if (state.total > 0) state.downloaded.toFloat() / state.total else 0f
+                                    },
+                                    modifier = Modifier.fillMaxWidth().height(4.dp).clip(RoundedCornerShape(2.dp)),
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = state.step,
+                                    fontSize = 11.sp,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
+                    is PackDownloadState.Error -> {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = state.message,
+                                    fontSize = 11.sp,
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                if (state.canRetry) {
+                                    OutlinedButton(
+                                        onClick = { viewModel.retryLastDownload() },
+                                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                                    ) {
+                                        Text("Retry", fontSize = 11.sp)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else -> {}
+                }
+            }
+
             if (hadiths.isEmpty()) {
                 item {
                     EmptyStateView(
-                        message = "No hadiths found for this book",
-                        tip = "Records for this book may not be cached locally yet. Check back or configure API sync in Settings."
+                        message = "No narrations cached for this book",
+                        tip = "Tap the download icon at top right to download all verified narrations for Book $bookNumber from the public CDN."
                     )
                 }
             } else {
+                item {
+                    Text(
+                        text = "Cached Narrations (${hadiths.size})",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
                 items(hadiths, key = { it.id }) { hadith ->
                     HadithCard(
                         hadith = hadith,

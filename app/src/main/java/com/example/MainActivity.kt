@@ -32,10 +32,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ui.HadithViewModel
 import com.example.ui.Screen
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import com.example.ui.screens.AdminDashboardScreen
 import com.example.ui.screens.BookDetailScreen
 import com.example.ui.screens.BookmarksScreen
 import com.example.ui.screens.CollectionDetailScreen
@@ -44,6 +52,7 @@ import com.example.ui.screens.HadithDetailScreen
 import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.SearchScreen
 import com.example.ui.screens.SettingsScreen
+import com.example.ui.theme.AmiriFontFamily
 import com.example.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -65,6 +74,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HadithAppRoot(viewModel: HadithViewModel) {
     val currentScreen by viewModel.currentScreen.collectAsStateWithLifecycle()
+    val hasSeenOnboarding by viewModel.hasSeenOnboarding.collectAsStateWithLifecycle()
 
     // Handle Android system back press
     BackHandler(enabled = currentScreen !is Screen.Home) {
@@ -100,6 +110,7 @@ fun HadithAppRoot(viewModel: HadithViewModel) {
             is Screen.Search -> SearchScreen(viewModel, modifier = screenModifier)
             is Screen.Bookmarks -> BookmarksScreen(viewModel, modifier = screenModifier)
             is Screen.Settings -> SettingsScreen(viewModel, modifier = screenModifier)
+            is Screen.AdminDashboard -> AdminDashboardScreen(viewModel, modifier = screenModifier)
             is Screen.HadithDetail -> HadithDetailScreen(
                 hadithId = screen.hadithId,
                 returnScreen = screen.returnScreen,
@@ -107,7 +118,63 @@ fun HadithAppRoot(viewModel: HadithViewModel) {
                 modifier = screenModifier
             )
         }
+
+        if (!hasSeenOnboarding) {
+            OnboardingDialog(onDismiss = { viewModel.dismissOnboarding() })
+        }
     }
+}
+
+@Composable
+fun OnboardingDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Column {
+                Text(
+                    text = "DEEN-E-ILM | دینِ علم",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Authentic Prophetic Hadith Library & Search",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        },
+        text = {
+            Column {
+                Text(
+                    text = "مرحباً بكم في تطبيق دینِ علم لدراسة وتصفح أحاديث خير الأنام ﷺ.",
+                    fontFamily = AmiriFontFamily,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    lineHeight = 22.sp
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "• 100% Free & Offline-First: All bundled hadiths work completely without internet.\n\n" +
+                            "• Exact Reference Search: Quickly look up references like \"Sahih Bukhari 1\" or \"Bukhari 13\".\n\n" +
+                            "• Arabic, English, & Urdu: Verified translations alongside classical Arabic matn and scholar authenticity gradings.\n\n" +
+                            "• Zero Tracking & Privacy: Local bookmarks, no advertisements, and zero telemetry collection.",
+                    fontSize = 12.sp,
+                    lineHeight = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                modifier = Modifier.testTag("onboarding_get_started_button")
+            ) {
+                Text("Get Started / ابدأ")
+            }
+        }
+    )
 }
 
 @Composable

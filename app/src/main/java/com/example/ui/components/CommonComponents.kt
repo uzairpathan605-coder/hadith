@@ -25,7 +25,9 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.CloudDone
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material.icons.outlined.AutoStories
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
@@ -52,10 +54,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.HadithEntity
+import com.example.data.model.SourceType
 import com.example.ui.theme.AmiriFontFamily
 import com.example.ui.theme.DaifSlate
 import com.example.ui.theme.GoldAccent
 import com.example.ui.theme.HasanAmber
+import com.example.ui.theme.NotoNastaliqUrduFontFamily
 import com.example.ui.theme.SahihGreen
 
 @Composable
@@ -94,6 +98,124 @@ fun AuthenticityBadge(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+        }
+    }
+}
+
+@Composable
+fun SourceVerificationBadge(
+    sourceType: String,
+    isOfflineCached: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val (label, bgColor, textColor, icon) = when (sourceType) {
+        SourceType.CANONICAL_VERIFIED -> {
+            Quadruple(
+                "Verified Canonical",
+                MaterialTheme.colorScheme.primaryContainer,
+                MaterialTheme.colorScheme.onPrimaryContainer,
+                Icons.Default.Verified
+            )
+        }
+        SourceType.API_SYNCED -> {
+            Quadruple(
+                if (isOfflineCached) "Source API (Offline Cached)" else "Source API",
+                GoldAccent.copy(alpha = 0.2f),
+                MaterialTheme.colorScheme.onSurface,
+                Icons.Default.CloudDone
+            )
+        }
+        else -> {
+            Quadruple(
+                "Sample Record",
+                Color(0xFFEEEEEE),
+                Color(0xFF555555),
+                Icons.Outlined.Info
+            )
+        }
+    }
+
+    Surface(
+        color = bgColor,
+        shape = RoundedCornerShape(8.dp),
+        modifier = modifier.testTag("source_verification_badge")
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = textColor,
+                modifier = Modifier.size(11.dp)
+            )
+            Spacer(modifier = Modifier.width(3.dp))
+            Text(
+                text = label,
+                color = textColor,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
+
+private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
+
+@Composable
+fun LanguageAvailabilityPills(
+    hasArabic: Boolean,
+    hasEnglish: Boolean,
+    hasUrdu: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (hasArabic) {
+            Surface(
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(4.dp)
+            ) {
+                Text(
+                    text = "عربي",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                )
+            }
+        }
+        if (hasEnglish) {
+            Surface(
+                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
+                shape = RoundedCornerShape(4.dp)
+            ) {
+                Text(
+                    text = "EN",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                )
+            }
+        }
+        if (hasUrdu) {
+            Surface(
+                color = GoldAccent.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(4.dp)
+            ) {
+                Text(
+                    text = "اردو",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                )
+            }
         }
     }
 }
@@ -169,13 +291,16 @@ fun HadithCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // Header Row: Reference badge & Bookmark action
+            // Header Row: Reference badge, Authenticity Badge & Bookmark action
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(6.dp))
@@ -189,7 +314,6 @@ fun HadithCard(
                             fontSize = 12.sp
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
                     AuthenticityBadge(grade = hadith.grade)
                 }
 
@@ -205,6 +329,24 @@ fun HadithCard(
                         tint = if (hadith.isBookmarked) GoldAccent else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+            }
+
+            // Sub-header: Source Verification Badge + Languages Available
+            Spacer(modifier = Modifier.height(6.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SourceVerificationBadge(
+                    sourceType = hadith.sourceType,
+                    isOfflineCached = hadith.isOfflineCached
+                )
+                LanguageAvailabilityPills(
+                    hasArabic = hadith.hasArabic,
+                    hasEnglish = hadith.hasEnglish,
+                    hasUrdu = hadith.hasUrdu
+                )
             }
 
             // Chapter title if present
@@ -223,25 +365,27 @@ fun HadithCard(
             Spacer(modifier = Modifier.height(10.dp))
 
             // Arabic text snippet
-            Text(
-                text = hadith.arabicText,
-                fontFamily = AmiriFontFamily,
-                fontSize = 19.sp,
-                lineHeight = 30.sp,
-                textAlign = TextAlign.End,
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    textDirection = TextDirection.Rtl
-                ),
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (hadith.hasArabic) {
+                Text(
+                    text = hadith.arabicText,
+                    fontFamily = AmiriFontFamily,
+                    fontSize = 19.sp,
+                    lineHeight = 30.sp,
+                    textAlign = TextAlign.End,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        textDirection = TextDirection.Rtl
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // English Translation preview
-            if (hadith.englishText.isNotBlank()) {
+            // English Translation preview or explicit indicator
+            if (hadith.hasEnglish) {
                 Text(
                     text = hadith.englishText,
                     fontSize = 13.sp,
@@ -253,12 +397,13 @@ fun HadithCard(
             }
 
             // Urdu Translation preview
-            if (hadith.urduText.isNotBlank()) {
+            if (hadith.hasUrdu) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = hadith.urduText,
-                    fontSize = 13.sp,
-                    lineHeight = 20.sp,
+                    fontFamily = NotoNastaliqUrduFontFamily,
+                    fontSize = 14.sp,
+                    lineHeight = 24.sp,
                     textAlign = TextAlign.End,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         textDirection = TextDirection.Rtl
@@ -302,8 +447,8 @@ fun HadithCard(
 
 @Composable
 fun IslamicHeaderBanner(
-    title: String = "مكتبة الحديث",
-    subtitle: String = "Hadith Library — Authentic Canonical Prophetic Traditions",
+    title: String = "دینِ علم",
+    subtitle: String = "DEEN-E-ILM | Authentic Hadith Library & Search",
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -315,7 +460,6 @@ fun IslamicHeaderBanner(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Elegant gold crest icon
             Box(
                 modifier = Modifier
                     .size(44.dp)
@@ -334,7 +478,6 @@ fun IslamicHeaderBanner(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Arabic title
             Text(
                 text = title,
                 fontFamily = AmiriFontFamily,
@@ -346,7 +489,6 @@ fun IslamicHeaderBanner(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // English subtitle
             Text(
                 text = subtitle,
                 fontSize = 12.sp,
@@ -364,7 +506,7 @@ fun SearchInputField(
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "Search hadith, Arabic, English, Urdu, #..."
+    placeholder: String = "Search e.g. \"Sahih Bukhari 1\", \"intentions\", \"نية\"..."
 ) {
     OutlinedTextField(
         value = query,
